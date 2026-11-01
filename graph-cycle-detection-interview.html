@@ -1,0 +1,29 @@
+<!doctype html><html><head><meta charset="utf-8"><title>Detecting Cycles in Graphs: The Three Interview Patterns</title></head><body><h1>Detecting Cycles in Graphs: The Three Interview Patterns</h1>
+<p>"Does this graph have a cycle?" shows up in course schedule, deadlock detection, and dependency questions. There are three standard approaches, and the right one depends on whether the graph is directed.</p>
+<h2>1. Directed graph: DFS with three colors</h2>
+<p>Mark each node as unvisited (0), in the current path (1), or finished (2). If you reach a node marked 1, you have found a back edge, which means there is a cycle.</p>
+<pre><code class="language-python">def has_cycle_directed(n, edges):
+    g = [[] for _ in range(n)]
+    for u, v in edges:
+        g[u].append(v)
+    color = [0] * n
+    def dfs(u):
+        color[u] = 1
+        for v in g[u]:
+            if color[v] == 1 or (color[v] == 0 and dfs(v)):
+                return True
+        color[u] = 2
+        return False
+    return any(color[i] == 0 and dfs(i) for i in range(n))
+</code></pre>
+<h2>2. Directed graph: Kahn's algorithm</h2>
+<p>Run a BFS topological sort. If you process fewer than n nodes, the leftover nodes are part of a cycle. This avoids recursion depth limits.</p>
+<h2>3. Undirected graph: union-find or parent tracking</h2>
+<p>With union-find, an edge whose two endpoints already share a root closes a cycle. With DFS, skip the edge back to the parent and flag any other visited neighbor.</p>
+<h2>Common mistakes</h2>
+<ul>
+<li>Using the undirected "visited" check on a directed graph, which flags false cycles in diamond shapes.</li>
+<li>Forgetting disconnected components.</li>
+<li>Recursion limits on large inputs in Python.</li>
+</ul>
+<p>Written by the team at <a href="https://www.linkjob.ai/">Linkjob</a>, where we build AI tools for coding interview practice.</p></body></html>
