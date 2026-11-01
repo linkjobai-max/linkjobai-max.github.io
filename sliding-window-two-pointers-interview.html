@@ -1,0 +1,20 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Sliding Window and Two Pointers in Coding Interviews</title><style>body{font-family:system-ui,sans-serif;max-width:760px;margin:40px auto;padding:0 16px;line-height:1.6}code,pre{background:#f4f4f4}pre{padding:12px;overflow:auto}</style></head><body>
+<h1>Sliding Window and Two Pointers in Coding Interviews</h1>
+<p>A surprising number of array and string questions in coding interviews collapse into one of two patterns: a sliding window or a pair of pointers. Recognising them early turns an O(n&sup2;) brute force into a clean O(n) answer, and interviewers notice when you name the pattern and explain why it fits.</p>
+<h2>When to reach for a sliding window</h2>
+<p>Look for phrases like "longest substring", "shortest subarray", "at most K distinct" or "sum at least target". The common thread is a contiguous range whose validity changes predictably as you grow or shrink it.</p>
+<pre>left = 0
+for right in range(len(s)):
+    add(s[right])
+    while window_is_invalid():
+        remove(s[left]); left += 1
+    best = max(best, right - left + 1)</pre>
+<p>Say out loud what makes the window invalid and what you track (a counter, a running sum). That one sentence shows the interviewer you understand the invariant, not just the template.</p>
+<h2>When to use two pointers</h2>
+<p>Sorted arrays, pair sums, removing duplicates in place, and palindrome checks usually want two pointers moving toward each other or one fast and one slow. The key question: after comparing the two elements, can you safely discard one side? If yes, two pointers work.</p>
+<h2>Common mistakes</h2>
+<ul><li>Forgetting to shrink the window with a <code>while</code> rather than an <code>if</code>.</li><li>Updating the answer before the window is valid again.</li><li>Using two pointers on unsorted input without sorting first (and forgetting the O(n log n) cost).</li><li>Off-by-one errors in window length: it is <code>right - left + 1</code>.</li></ul>
+<h2>How to practise</h2>
+<p>Solve five problems of each pattern, then explain each solution aloud in under two minutes. Talking through the invariant is the part most candidates skip. If you want a second voice while you rehearse, <a href="https://www.linkjob.ai/">AI coding interview assistant</a> Linkjob AI can run mock coding rounds and give feedback on your explanation.</p>
+<p><em>Disclosure: I'm part of the Linkjob AI team.</em></p>
+</body></html>
