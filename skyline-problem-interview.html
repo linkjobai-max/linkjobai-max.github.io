@@ -1,0 +1,39 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Skyline Problem: Explaining the Sweep Line and Heap in a Coding Interview</title>
+<meta name="description" content="How to explain the skyline problem in a coding interview: events, a max-heap with lazy deletion, and the complexity talking points."><style>body{max-width:760px;margin:40px auto;padding:0 16px;font-family:system-ui,sans-serif;line-height:1.6;color:#222}pre{background:#f5f5f5;padding:12px;overflow:auto}code{font-family:monospace}</style></head><body>
+<h1>The Skyline Problem: Explaining the Sweep Line and Heap in a Coding Interview</h1>
+<p>The skyline problem is a classic "hard" question because it combines three ideas at once: turning shapes into events, sweeping left to right, and keeping the current maximum height in a heap. If you can narrate those three steps clearly, the code almost writes itself.</p>
+<h2>1. Turn buildings into events</h2>
+<p>Each building <code>[left, right, height]</code> produces a start event at <code>left</code> and an end event at <code>right</code>. A common trick is to store start events with a negative height so that sorting by <code>(x, height)</code> processes taller starts first and avoids duplicate key points at the same x.</p>
+<h2>2. Sweep with a max-heap and lazy deletion</h2>
+<pre><code>import heapq
+
+def get_skyline(buildings):
+    events = []
+    for l, r, h in buildings:
+        events.append((l, -h, r))   # start: negative height, remember end
+        events.append((r, 0, 0))    # end marker
+    events.sort()
+
+    result = []
+    heap = [(0, float('inf'))]      # (negative height, end x)
+    for x, neg_h, r in events:
+        if neg_h:
+            heapq.heappush(heap, (neg_h, r))
+        while heap[0][1] &lt;= x:      # lazily drop buildings that ended
+            heapq.heappop(heap)
+        height = -heap[0][0]
+        if not result or result[-1][1] != height:
+            result.append([x, height])
+    return result</code></pre>
+<h2>3. What to say while you code</h2>
+<ul>
+<li><strong>Why lazy deletion:</strong> Python's heap cannot remove an arbitrary element in O(log n), so we leave ended buildings in place and pop them only when they reach the top.</li>
+<li><strong>Key point rule:</strong> we only output a point when the current max height changes. That one sentence explains the whole <code>if</code> at the bottom.</li>
+<li><strong>Complexity:</strong> 2n events, each pushed and popped at most once, so O(n log n) time and O(n) space.</li>
+<li><strong>Alternatives:</strong> divide and conquer (merge two skylines like merge sort) or a sorted multiset in languages that have one (TreeMap in Java).</li>
+</ul>
+<h2>4. Test cases worth mentioning</h2>
+<ul><li>Two buildings with the same left edge and different heights.</li><li>A building that ends exactly where another starts at the same height (no duplicate point).</li><li>Fully nested buildings.</li></ul>
+<p>Hard sweep-line problems are easier when you practice explaining them live. If you want real-time support during practice rounds, take a look at <a href="https://www.linkjob.ai/">Linkjob</a>, an AI assistant for technical interviews.</p>
+<p><em>Disclosure: I work on Linkjob AI.</em></p>
+</body></html>
