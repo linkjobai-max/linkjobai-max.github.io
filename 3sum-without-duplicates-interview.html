@@ -1,0 +1,30 @@
+<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>3Sum Without Duplicates: Sort, Fix One, Two Pointers</title><style>body{max-width:760px;margin:40px auto;padding:0 16px;font-family:system-ui,sans-serif;line-height:1.6}pre{background:#f4f4f4;padding:12px;overflow:auto}</style></head><body><h1>3Sum Without Duplicates: Sort, Fix One, Two Pointers</h1>
+<p>3Sum asks for all unique triplets that sum to zero. The algorithm is short; the part interviewers watch is how you avoid duplicate triplets without a hash set of tuples.</p>
+<h2>Sort first</h2>
+<p>Sorting costs O(n log n), which is cheaper than the O(n^2) scan that follows, and it unlocks two things: two pointers, and skipping equal neighbours to remove duplicates.</p>
+<h2>Fix one number, then two pointers</h2>
+<p>For each index i, look for two numbers in nums[i+1:] that sum to -nums[i]. Move lo up when the sum is too small and hi down when it is too large.</p>
+<pre><code>def three_sum(nums):
+    nums.sort()
+    res = []
+    for i in range(len(nums) - 2):
+        if nums[i] &gt; 0: break
+        if i and nums[i] == nums[i-1]: continue
+        lo, hi = i + 1, len(nums) - 1
+        while lo &lt; hi:
+            s = nums[i] + nums[lo] + nums[hi]
+            if s &lt; 0: lo += 1
+            elif s &gt; 0: hi -= 1
+            else:
+                res.append([nums[i], nums[lo], nums[hi]])
+                lo += 1
+                while lo &lt; hi and nums[lo] == nums[lo-1]: lo += 1
+                hi -= 1
+    return res</code></pre>
+<h2>Where the duplicates go</h2>
+<p>Two skips handle everything: skip a fixed value equal to the previous fixed value, and after a match, advance lo past equal values. The early break when nums[i] &gt; 0 is a cheap optimisation worth mentioning.</p>
+<h2>Follow-ups</h2>
+<p>3Sum Closest uses the same loop and tracks the best distance. 4Sum adds one more fixed index and generalises to kSum by recursion down to the two-pointer base case. Total time for 3Sum is O(n^2) with O(1) extra space besides the output.</p>
+<p>If you practise explaining patterns like this out loud, an <a href="https://www.linkjob.ai/interview-copilot/">AI interview assistant</a> can prompt you when you skip a step. Disclosure: I help build Linkjob AI.
+</p>
+</body></html>
