@@ -1,0 +1,25 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Toeplitz Matrix (LeetCode 766): One Comparison per Cell, Plus the Streaming Follow-Up</title>
+<meta name="description" content="Check whether a matrix is Toeplitz in O(mn) time with one neighbour comparison, and handle the follow-ups about streaming rows and memory limits.">
+<style>body{max-width:720px;margin:40px auto;padding:0 16px;font:17px/1.6 system-ui,sans-serif;color:#222}pre{background:#f4f4f4;padding:12px;overflow:auto}code{font-family:ui-monospace,monospace}</style></head><body>
+<h1>Toeplitz Matrix (LeetCode 766): One Comparison per Cell, Plus the Streaming Follow-Up</h1>
+<p>A matrix is Toeplitz when every diagonal running from top-left to bottom-right holds a single value. The question looks like a warm-up, but interviewers like it because the follow-ups test whether you understand what your loop actually reads.</p>
+<h2>The one-line idea</h2>
+<p>Every cell that is not in the first row or first column must equal the cell up and to the left of it. If that holds everywhere, every diagonal is constant, because each diagonal is a chain of these pairs.</p>
+<pre><code>def is_toeplitz(matrix):
+    for r in range(1, len(matrix)):
+        for c in range(1, len(matrix[0])):
+            if matrix[r][c] != matrix[r - 1][c - 1]:
+                return False
+    return True</code></pre>
+<p>Time is O(m &times; n), extra space is O(1). There is no need to walk diagonals explicitly or to store a value per diagonal in a hash map, although the hash map version (key <code>r - c</code>) is a fine thing to mention as an alternative.</p>
+<h2>Follow-up 1: rows arrive one at a time</h2>
+<p>If you can only hold one row in memory, notice that the check above only ever compares row <code>r</code> with row <code>r - 1</code>. Keep the previous row, and require that <code>row[1:] == prev[:-1]</code>. Memory is O(n).</p>
+<h2>Follow-up 2: a row does not fit in memory</h2>
+<p>Split each row into column chunks that overlap by one element. Chunk <code>k</code> of row <code>r</code> is compared with chunk <code>k</code> of row <code>r - 1</code>, shifted by one. Saying this out loud shows you understand that the dependency is local, which is the real point of the question.</p>
+<h2>Edge cases to state</h2>
+<ul><li>A single row or a single column is always Toeplitz.</li><li>Non-square matrices are allowed; nothing in the loop assumes m equals n.</li></ul>
+<h2>Related questions</h2>
+<p>Diagonal Traverse and Sort the Matrix Diagonally both reuse the fact that every cell on one diagonal shares the same <code>r - c</code>.</p>
+<hr><p><em>Disclosure: I work on Linkjob AI. If you want help with problems like this in live coding rounds, <a href="https://www.linkjob.ai/coding-interview-copilot/">AI help for online coding assessments</a> is what we build.</em></p>
+</body></html>
